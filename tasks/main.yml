@@ -16,12 +16,16 @@
 
 - name: Generate OpenSSH host key files
   community.crypto.openssh_keypair:
-    path: "/etc/ssh/ssh_host_{{ item }}_key"
-    type: "{{ item }}"
+    path: "/etc/ssh/ssh_host_{{ item.type }}_key"
+    size: "{{ item.size | default(omit) }}"
+    type: "{{ item.type }}"
   loop:
-    - rsa
-    - ecdsa
-    - ed25519
+    # ARGH! Debian uses a 3072-bit RSA key by default, while Ansible's default is 4096 bits.
+    - {type: rsa, size: 3072}
+    - type: ecdsa
+    - type: ed25519
+  loop_control:
+    label: "{{ item.type }}"
 
 # Ensure proper permissions on private host key files
 - name: Ensure permissions on OpenSSH private host key files
