@@ -1,0 +1,6 @@
+---
+- name: Restart OpenSSH service to apply configuration changes
+  ansible.builtin.systemd_service:
+    name: sshd
+    state: restarted
+  listen: restart openssh service

@@ -1,0 +1,20 @@
+---
+# Disable GSSAPIAuthentication to enhance security.
+# This prevents the use of GSSAPI for authentication.
+openssh_gss_api_authentication: false
+
+# Disable PermitEmptyPasswords to prevent empty passwords for SSH login.
+# This ensures users must have non-empty passwords.
+openssh_empty_passwords: false
+
+# Disable PasswordAuthentication to prevent password-based authentication.
+# This enforces the use of key-based authentication.
+openssh_password_authentication: false
+
+# Disable PermitRootLogin to prevent root login via SSH.
+# This improves security by disallowing direct root access.
+openssh_permit_root_login: false
+
+# Disable PermitUserEnvironment to restrict users from modifying their environment.
+# This prevents users from loading custom environment variables.
+openssh_permit_user_environment: false

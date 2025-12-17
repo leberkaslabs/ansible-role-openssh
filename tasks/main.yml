@@ -1,0 +1,127 @@
+---
+- name: Install openssh-server package
+  ansible.builtin.package:
+    name: openssh-server
+    state: present
+
+# Ensure openssh privilege separation directory exists (Debian specific)
+- name: Ensure OpenSSH privilege separation directory exists
+  ansible.builtin.file:
+    path: /run/sshd
+    owner: root
+    group: root
+    mode: "0755"
+    state: directory
+  when: ansible_os_family == "Debian"
+
+- name: Generate OpenSSH host key files
+  community.crypto.openssh_keypair:
+    path: "/etc/ssh/ssh_host_{{ item }}_key"
+    type: "{{ item }}"
+  loop:
+    - rsa
+    - ecdsa
+    - ed25519
+
+# Ensure proper permissions on private host key files
+- name: Ensure permissions on OpenSSH private host key files
+  block:
+    - name: Find OpenSSH private key files
+      ansible.builtin.find:
+        paths: /etc/ssh
+        patterns: "ssh_host_*_key"
+      register: openssh_private
+
+    - name: Update permissions on OpenSSH private host key files
+      ansible.builtin.file:
+        path: "{{ item }}"
+        owner: root
+        group: root
+        mode: "0600"
+      loop: "{{ openssh_private.files | map(attribute='path') | default([]) }}"
+
+# Ensure proper permissions on public host key files
+- name: Ensure permissions on OpenSSH public host key files
+  block:
+    - name: Find OpenSSH public key files
+      ansible.builtin.find:
+        paths: /etc/ssh
+        patterns: "ssh_host_*_key.pub"
+      register: openssh_public
+
+    - name: Update permissions on OpenSSH public host key files
+      ansible.builtin.file:
+        path: "{{ item }}"
+        owner: root
+        group: root
+        mode: "0644"
+      loop: "{{ openssh_public.files | map(attribute='path') | default([]) }}"
+
+- name: Ensure OpenSSH uses correct login banner
+  ansible.builtin.lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: (?i)^(#|)\s*Banner
+    line: "Banner /etc/issue.net"
+    owner: root
+    group: root
+    mode: "0600"
+    validate: sshd -f %s -t
+  notify: restart openssh service
+
+- name: Ensure OpenSSH GSSAPIAuthentication is disabled
+  ansible.builtin.lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: (?i)^(#|)\s*GSSAPIAuthentication
+    line: "GSSAPIAuthentication {{ 'yes' if openssh_gss_api_authentication | bool else 'no' }}"
+    owner: root
+    group: root
+    mode: "0600"
+    validate: sshd -f %s -t
+  notify: restart openssh service
+
+- name: Ensure OpenSSH PermitEmptyPasswords is disabled
+  ansible.builtin.lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: (?i)^(#|)\s*PermitEmptyPasswords
+    line: "PermitEmptyPasswords {{ 'yes' if openssh_empty_passwords | bool else 'no' }}"
+    owner: root
+    group: root
+    mode: "0600"
+    validate: sshd -f %s -t
+  notify: restart openssh service
+
+- name: Ensure OpenSSH PasswordAuthentication is disabled
+  ansible.builtin.lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: (?i)^(#|)\s*PasswordAuthentication
+    line: "PasswordAuthentication {{ 'yes' if openssh_password_authentication | bool else 'no' }}"
+    validate: sshd -f %s -t
+  notify: restart openssh service
+
+- name: Ensure OpenSSH PermitRootLogin is disabled
+  ansible.builtin.lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: (?i)^(#|)\s*PermitRootLogin
+    line: "PermitRootLogin {{ 'yes' if openssh_permit_root_login | bool else 'no' }}"
+    owner: root
+    group: root
+    mode: "0600"
+    validate: sshd -f %s -t
+  notify: restart openssh service
+
+- name: Ensure OpenSSH PermitUserEnvironment is disabled
+  ansible.builtin.lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: (?i)^(#|)\s*PermitUserEnvironment
+    line: "PermitUserEnvironment {{ 'yes' if openssh_permit_user_environment | bool else 'no' }}"
+    owner: root
+    group: root
+    mode: "0600"
+    validate: sshd -f %s -t
+  notify: restart openssh service
+
+- name: Ensure OpenSSH service is started and enabled
+  ansible.builtin.systemd_service:
+    name: sshd
+    enabled: true
+    state: started

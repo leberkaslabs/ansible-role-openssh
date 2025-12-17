@@ -1,0 +1,27 @@
+---
+argument_specs:
+  main:
+    short_description: openssh
+    description: Install and configure openssh on your system.
+    author: dudecalledbro
+    options:
+      openssh_gss_api_authentication:
+        type: bool
+        required: true
+        description: This prevents the use of GSSAPI for authentication.
+      openssh_empty_passwords:
+        type: bool
+        required: true
+        description: This ensures users must have non-empty passwords.
+      openssh_password_authentication:
+        type: bool
+        required: true
+        description: This enforces the use of key-based authentication.
+      openssh_permit_root_login:
+        type: bool
+        required: true
+        description: This improves security by disallowing direct root access.
+      openssh_permit_user_environment:
+        type: bool
+        required: true
+        description: This prevents users from loading custom environment variables.

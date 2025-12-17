@@ -1,0 +1,21 @@
+---
+dependencies: []
+
+galaxy_info:
+  role_name: openssh
+  author: dudecalledbro
+  description: Install and configure openssh on your system.
+  license: License (MIT)
+  min_ansible_version: "2.15"
+  platforms:
+    - name: Debian
+      versions:
+        - all
+    - name: Ubuntu
+      versions:
+        - all
+
+  galaxy_tags:
+    - openssh
+    - hardening
+    - system
