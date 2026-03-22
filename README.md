@@ -1,4 +1,4 @@
-# Ansible Role: Openssh
+# Ansible Role: openssh
 
 [![Ansible Molecule](https://github.com/leberkaslabs/ansible-role-openssh/actions/workflows/molecule.yml/badge.svg)](https://github.com/leberkaslabs/ansible-role-openssh/actions/workflows/molecule.yml)
 
