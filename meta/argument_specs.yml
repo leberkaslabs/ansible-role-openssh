@@ -1,9 +1,9 @@
 ---
 argument_specs:
   main:
-    short_description: openssh
+    author: Niclas Spreng
     description: Install and configure openssh on your system.
-    author: dudecalledbro
+    short_description: openssh
     options:
       openssh_gss_api_authentication:
         type: bool

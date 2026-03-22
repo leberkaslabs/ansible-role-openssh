@@ -2,11 +2,13 @@
 dependencies: []
 
 galaxy_info:
-  role_name: openssh
-  author: dudecalledbro
+  author: Niclas Spreng
   description: Install and configure openssh on your system.
-  license: License (MIT)
+  license: MIT
   min_ansible_version: "2.15"
+  namespace: leberkaslabs
+  role_name: openssh
+
   platforms:
     - name: Debian
       versions:

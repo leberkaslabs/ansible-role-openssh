@@ -1,4 +1,4 @@
-# Ansible Role: OpenSSH
+# Ansible Role: Openssh
 
 [![Ansible Molecule](https://github.com/leberkaslabs/ansible-role-openssh/actions/workflows/molecule.yml/badge.svg)](https://github.com/leberkaslabs/ansible-role-openssh/actions/workflows/molecule.yml)
 
@@ -16,11 +16,9 @@ The default values for the variables are set in [defaults/main.yml](defaults/mai
 ```yaml
 - hosts: all
   roles:
-    - role: dudecalledbro.openssh
+    - role: leberkaslabs.openssh
 ```
 
 ## License
 
-Copyright © 2025 Niclas Spreng
-
-Licensed under the [MIT license](LICENSE).
+Copyright (c) 2026 Niclas Spreng

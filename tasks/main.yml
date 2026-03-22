@@ -16,6 +16,7 @@
 
 - name: Generate OpenSSH host key files
   community.crypto.openssh_keypair:
+    # yamllint disable-line rule:quoted-strings
     path: "/etc/ssh/ssh_host_{{ item.type }}_key"
     size: "{{ item.size | default(omit) }}"
     type: "{{ item.type }}"
@@ -33,6 +34,7 @@
     - name: Find OpenSSH private key files
       ansible.builtin.find:
         paths: /etc/ssh
+        # yamllint disable-line rule:quoted-strings
         patterns: "ssh_host_*_key"
       register: openssh_private
 
@@ -50,6 +52,7 @@
     - name: Find OpenSSH public key files
       ansible.builtin.find:
         paths: /etc/ssh
+        # yamllint disable-line rule:quoted-strings
         patterns: "ssh_host_*_key.pub"
       register: openssh_public
 
@@ -65,7 +68,7 @@
   ansible.builtin.lineinfile:
     path: /etc/ssh/sshd_config
     regexp: (?i)^(#|)\s*Banner
-    line: "Banner /etc/issue.net"
+    line: Banner /etc/issue.net
     owner: root
     group: root
     mode: "0600"
@@ -76,6 +79,7 @@
   ansible.builtin.lineinfile:
     path: /etc/ssh/sshd_config
     regexp: (?i)^(#|)\s*GSSAPIAuthentication
+    # yamllint disable-line rule:quoted-strings
     line: "GSSAPIAuthentication {{ 'yes' if openssh_gss_api_authentication | bool else 'no' }}"
     owner: root
     group: root
@@ -87,6 +91,7 @@
   ansible.builtin.lineinfile:
     path: /etc/ssh/sshd_config
     regexp: (?i)^(#|)\s*PermitEmptyPasswords
+    # yamllint disable-line rule:quoted-strings
     line: "PermitEmptyPasswords {{ 'yes' if openssh_empty_passwords | bool else 'no' }}"
     owner: root
     group: root
@@ -98,6 +103,7 @@
   ansible.builtin.lineinfile:
     path: /etc/ssh/sshd_config
     regexp: (?i)^(#|)\s*PasswordAuthentication
+    # yamllint disable-line rule:quoted-strings
     line: "PasswordAuthentication {{ 'yes' if openssh_password_authentication | bool else 'no' }}"
     validate: sshd -f %s -t
   notify: restart openssh service
@@ -106,6 +112,7 @@
   ansible.builtin.lineinfile:
     path: /etc/ssh/sshd_config
     regexp: (?i)^(#|)\s*PermitRootLogin
+    # yamllint disable-line rule:quoted-strings
     line: "PermitRootLogin {{ 'yes' if openssh_permit_root_login | bool else 'no' }}"
     owner: root
     group: root
@@ -117,6 +124,7 @@
   ansible.builtin.lineinfile:
     path: /etc/ssh/sshd_config
     regexp: (?i)^(#|)\s*PermitUserEnvironment
+    # yamllint disable-line rule:quoted-strings
     line: "PermitUserEnvironment {{ 'yes' if openssh_permit_user_environment | bool else 'no' }}"
     owner: root
     group: root
